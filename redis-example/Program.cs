@@ -14,9 +14,29 @@ namespace redis_example
             //usingIRedisNativeClient();
             //usingIRedisClient();
             //usingIRedisTypedClient();
-            usingTransactions();
+            //usingTransactions();
+            //usingPublish();
+            usingSubscribe();
             
             Console.ReadLine();
+        }
+
+        static void usingPublish()
+        {
+            using (IRedisClient client = new RedisClient())
+            {
+                client.PublishMessage("news", "testing");
+            }
+        }
+
+        static void usingSubscribe()
+        {
+            using(IRedisClient client = new RedisClient() )
+            {
+                var sub = client.CreateSubscription();
+                sub.OnMessage = (c, m) => Console.WriteLine("Got message: {0}, from channel {1}", m, c);
+                sub.SubscribeToChannels("news");
+            }
         }
 
         static void usingTransactions()
